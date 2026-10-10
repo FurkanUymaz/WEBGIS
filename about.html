@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Me</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
+    <style>
+        .page-wrapper{
+            padding: 40px;
+            text-align: center;
+        }
+        .about-section{
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        .switch-container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            font-family: "Josefin Sans", sans-serif;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        .switch{
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin: 0 15px;
+        }
+        .switch input{
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider{
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgb(115, 196, 2);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before{
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider{
+            background-color: rgb(34, 128, 175);
+        }
+        input:checked + .slider:before{
+            transform: translateX(26px);
+        }
+        .active-label{
+            color: rgb(115, 196, 2);
+            transition: color 0.4s;
+        }
+        .inactive-label{
+            color: gray;
+            transition: color 0.4s;
+        }
+        .maps-wrapper{
+            position: relative;
+            width: 100%;
+            height: 550px;
+            margin-top: 20px;
+        }
+        .map-section{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.4s;
+        }
+        #leaflet-section{
+            opacity: 1;
+            z-index: 2;
+            pointer-events: auto;
+        }
+        #ol-section{
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .map-container{
+            width: 100%;
+            height: 100%;
+            display: block;
+            border: 3px solid rgb(115, 196, 2);
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        #actionButtons{
+            display: none;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .add-btn{
+            padding: 10px 20px;
+            background-color: rgb(115, 196, 2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Josefin Sans", sans-serif;
+            font-size: 1.1rem;
+        }
+        .remove-btn{
+            padding: 10px 20px;
+            background-color: rgb(230, 126, 34);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Josefin Sans", sans-serif;
+            font-size: 1.1rem;
+        }
+        .custom-marker{
+            background-color: rgb(115, 196, 2);
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            border: 2px solid white;
+            font-family: "Josefin Sans", sans-serif;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="left">
+            <a href="https://x.com/FurkanUymaz8" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
+            <a href="https://www.instagram.com/furkannuymazz/#" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-square-github"></i></a>
+        </div>
+        <div class="center">
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT ME</a>
+            <a href="technologies.html">TECHNOLOGIES</a>
+        </div>
+        <div class="right">
+            <span>
+                <img src="user_giraffe.png" alt="user" style="height: 32px; width: 32px; border-radius: 50%;">
+            </span>
+            <div class="searchEngine" id="searchEngine">
+                <input type="text" placeholder="Search...">
+                <i class="fa-solid fa-magnifying-glass" id="searchIcon"></i>
+            </div>
+        </div>
+    </div>
+    <div class="page-wrapper">
+        <div class="about-section">
+            <h1>About Me</h1>
+            <p style="margin-top: 15px;">
+                Hello! I am a student at Hacettepe University. This page showcases my Web GIS Assignment.
+                Use the switch below to toggle between Leaflet and OpenLayers maps.
+            </p>
+        </div>
+        <div class="switch-container">
+            <span id="label-leaflet" class="active-label">Leaflet Map</span>
+            <label class="switch">
+                <input type="checkbox" id="mapToggle">
+                <span class="slider"></span>
+            </label>
+            <span id="label-ol" class="inactive-label">OpenLayers Map</span>
+        </div>
+        <div id="actionButtons">
+            <button id="addMarkerBtn" class="add-btn">Add Marker</button>
+            <button id="removeMarkerBtn" class="remove-btn">Remove Marker</button>
+        </div>
+        <div class="maps-wrapper">
+            <div id="leaflet-section" class="map-section">
+                <div id="leaflet-map" class="map-container"></div>
+            </div>
+            <div id="ol-section" class="map-section">
+                <div id="ol-map" class="map-container" style="border-color: rgb(34, 128, 175);"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+    <script>
+        let isAdmin = false
+        const actionButtons = document.getElementById('actionButtons')
+        if(sessionStorage.getItem('userRole') === 'admin'){
+            isAdmin = true
+            actionButtons.style.display = 'flex'
+        }
+        const bounds = [[-90, -180], [90, 180]]
+        const leafletMap = L.map('leaflet-map', {
+            maxBounds: bounds,
+            maxBoundsViscosity: 1.0,
+            minZoom: 3
+        }).setView([38.5, 30.0], 6)
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+            noWrap: true,
+            bounds: bounds
+        }).addTo(leafletMap)
+        const leafletMarkers = L.markerClusterGroup()
+        leafletMap.addLayer(leafletMarkers)
+        const maxExtent = ol.proj.get('EPSG:3857').getExtent()
+        const vectorSource = new ol.source.Vector()
+        const clusterSource = new ol.source.Cluster({
+            distance: 40,
+            source: vectorSource
+        })
+        const styleCache = {}
+        const clusterLayer = new ol.layer.Vector({
+            source: clusterSource,
+            style: (feature)=>{
+                const groupedFeatures = feature.get('features')
+                const size = groupedFeatures.length
+                if(size === 1){
+                    const name = groupedFeatures[0].get('name')
+                    return new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 8,
+                            fill: new ol.style.Fill({color: 'rgb(34, 128, 175)'}),
+                            stroke: new ol.style.Stroke({color: '#fff', width: 2})
+                        }),
+                        text: new ol.style.Text({
+                            text: name,
+                            offsetY: -15,
+                            fill: new ol.style.Fill({color: '#000'}),
+                            stroke: new ol.style.Stroke({color: '#fff', width: 3}),
+                            font: 'bold 14px "Josefin Sans", sans-serif'
+                        })
+                    })
+                }else{
+                    let style = styleCache[size]
+                    if(!style){
+                        style = new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 15,
+                                stroke: new ol.style.Stroke({color: '#fff'}),
+                                fill: new ol.style.Fill({color: 'rgb(34, 128, 175)'})
+                            }),
+                            text: new ol.style.Text({
+                                text: size.toString(),
+                                fill: new ol.style.Fill({color: '#fff'})
+                            })
+                        })
+                        styleCache[size] = style
+                    }
+                    return style
+                }
+            }
+        })
+        const olMap = new ol.Map({
+            target: 'ol-map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.XYZ({
+                        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+                        wrapX: false
+                    })
+                }),
+                clusterLayer
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([30.0, 38.5]),
+                zoom: 6,
+                minZoom: 3,
+                extent: maxExtent
+            })
+        })
+        let customMarkersList = JSON.parse(localStorage.getItem('customMarkersList'))
+        if(!localStorage.getItem('isFirstVisit')){
+            customMarkersList = [
+                {id: 'h1', lat: 36.5492, lng: 29.1244, name: 'Fethiye'},
+                {id: 'h2', lat: 37.8483, lng: 27.8435, name: 'Aydin'},
+                {id: 'h3', lat: 39.8687, lng: 32.7345, name: 'Beytepe'}
+            ]
+            localStorage.setItem('customMarkersList', JSON.stringify(customMarkersList))
+            localStorage.setItem('isFirstVisit', 'visited')
+        }
+        function renderMarker(id, name, lat, lng){
+            const icon = L.divIcon({
+                className: 'custom-marker',
+                html: name,
+                iconSize: null
+            })
+            const lMarker = L.marker([lat, lng], {icon: icon})
+            lMarker.customId = id
+            lMarker.name = name
+            leafletMarkers.addLayer(lMarker)
+            const feature = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([lng, lat])))
+            feature.set('name', name)
+            feature.set('customId', id)
+            vectorSource.addFeature(feature)
+        }
+        if(customMarkersList){
+            customMarkersList.forEach((loc)=>{
+                renderMarker(loc.id, loc.name, loc.lat, loc.lng)
+            })
+        }
+        function saveMarker(id, name, lat, lng){
+            customMarkersList.push({id, name, lat, lng})
+            localStorage.setItem('customMarkersList', JSON.stringify(customMarkersList))
+        }
+        function deleteMarker(id){
+            customMarkersList = customMarkersList.filter(m => m.id !== id)
+            localStorage.setItem('customMarkersList', JSON.stringify(customMarkersList))
+            leafletMarkers.eachLayer((layer)=>{
+                if(layer.customId === id){
+                    leafletMarkers.removeLayer(layer)
+                }
+            })
+            const features = vectorSource.getFeatures()
+            features.forEach((f)=>{
+                if(f.get('customId') === id){
+                    vectorSource.removeFeature(f)
+                }
+            })
+        }
+        const mapToggle = document.getElementById('mapToggle')
+        const leafletSection = document.getElementById('leaflet-section')
+        const olSection = document.getElementById('ol-section')
+        const labelLeaflet = document.getElementById('label-leaflet')
+        const labelOl = document.getElementById('label-ol')
+        let isAdding = false
+        let isRemoving = false
+        const addBtn = document.getElementById('addMarkerBtn')
+        const removeBtn = document.getElementById('removeMarkerBtn')
+        function updateUI(){
+            addBtn.style.backgroundColor = isAdding ? 'red' : 'rgb(115, 196, 2)'
+            addBtn.innerText = isAdding ? 'Cancel Adding' : 'Add Marker'
+            removeBtn.style.backgroundColor = isRemoving ? 'red' : 'rgb(230, 126, 34)'
+            removeBtn.innerText = isRemoving ? 'Cancel Removing' : 'Remove Marker'
+            if(isAdding || isRemoving){
+                if(mapToggle.checked){
+                    olMap.getTargetElement().style.cursor = 'crosshair'
+                    leafletMap.getContainer().style.cursor = ''
+                }else{
+                    leafletMap.getContainer().style.cursor = 'crosshair'
+                    olMap.getTargetElement().style.cursor = ''
+                }
+            }else{
+                leafletMap.getContainer().style.cursor = ''
+                olMap.getTargetElement().style.cursor = ''
+            }
+        }
+        mapToggle.addEventListener('change', (e)=>{
+            isAdding = false
+            isRemoving = false
+            updateUI()
+            if(e.target.checked){
+                leafletSection.style.opacity = '0'
+                leafletSection.style.zIndex = '1'
+                leafletSection.style.pointerEvents = 'none'
+                olSection.style.opacity = '1'
+                olSection.style.zIndex = '2'
+                olSection.style.pointerEvents = 'auto'
+                labelLeaflet.className = 'inactive-label'
+                labelOl.className = 'active-label'
+            }else{
+                olSection.style.opacity = '0'
+                olSection.style.zIndex = '1'
+                olSection.style.pointerEvents = 'none'
+                leafletSection.style.opacity = '1'
+                leafletSection.style.zIndex = '2'
+                leafletSection.style.pointerEvents = 'auto'
+                labelOl.className = 'inactive-label'
+                labelLeaflet.className = 'active-label'
+            }
+        })
+        addBtn.addEventListener('click', ()=>{
+            isAdding = !isAdding
+            isRemoving = false
+            updateUI()
+        })
+        removeBtn.addEventListener('click', ()=>{
+            isRemoving = !isRemoving
+            isAdding = false
+            updateUI()
+        })
+        leafletMap.on('click', (e)=>{
+            if(mapToggle.checked || !isAdmin) return
+            if(isAdding){
+                const name = prompt("Marker adi girin:")
+                if(name){
+                    const id = Date.now().toString()
+                    renderMarker(id, name, e.latlng.lat, e.latlng.lng)
+                    saveMarker(id, name, e.latlng.lat, e.latlng.lng)
+                    isAdding = false
+                    updateUI()
+                }
+            }
+        })
+        leafletMarkers.on('click', (e)=>{
+            if(!isRemoving || mapToggle.checked || !isAdmin) return
+            const marker = e.layer
+            if(confirm("Silmek istediginize emin misiniz: " + marker.name + "?")){
+                deleteMarker(marker.customId)
+                isRemoving = false
+                updateUI()
+            }
+        })
+        olMap.on('singleclick', (e)=>{
+            if(!mapToggle.checked || !isAdmin) return
+            if(isAdding){
+                const name = prompt("Marker adi girin:")
+                if(name){
+                    const coords = ol.proj.toLonLat(e.coordinate)
+                    const id = Date.now().toString()
+                    renderMarker(id, name, coords[1], coords[0])
+                    saveMarker(id, name, coords[1], coords[0])
+                    isAdding = false
+                    updateUI()
+                }
+            }
+            if(isRemoving){
+                let clickedFeature = null
+                olMap.forEachFeatureAtPixel(e.pixel, (f)=>{
+                    const grouped = f.get('features')
+                    if(grouped && grouped.length === 1){
+                        clickedFeature = grouped[0]
+                    }
+                })
+                if(clickedFeature){
+                    if(confirm("Silmek istediginize emin misiniz: " + clickedFeature.get('name') + "?")){
+                        deleteMarker(clickedFeature.get('customId'))
+                        isRemoving = false
+                        updateUI()
+                    }
+                }
+            }
+        })
+        const searchIcon = document.getElementById('searchIcon')
+        const searchEngine = document.getElementById('searchEngine')
+        searchIcon.addEventListener('click', ()=>{
+            searchEngine.classList.toggle('active')
+        })
+    </script>
+</body>
+</html>
