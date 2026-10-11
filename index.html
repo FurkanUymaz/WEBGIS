@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
     <style>
         #loginScreen{
             position: fixed;
@@ -13,76 +14,148 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgb(225, 255, 140);
+            background-color: rgba(225, 255, 140, 0.95);
             z-index: 99999;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: "Josefin Sans", sans-serif;
-        }
-        .login-title{
-            font-size: 3rem;
-            font-weight: bold;
-            color: rgb(34, 128, 175);
-            margin-bottom: 50px;
-            text-align: center;
-            letter-spacing: 2px;
+            font-family: 'Nunito', sans-serif;
+            backdrop-filter: blur(5px);
         }
         .login-box{
-            background: white;
-            padding: 50px 70px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: rgba(115, 196, 2, 0.226);
+            padding: 60px 80px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            text-align: center;
+        }
+        .login-title{
+            font-family: 'Caveat', cursive;
+            font-size: 3.5rem;
+            color: rgb(95, 166, 1);
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .login-subtitle{
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .login-btn-group{
+            display: flex;
             gap: 20px;
+            width: 100%;
         }
         .login-btn{
-            padding: 15px 40px;
+            flex: 1;
+            padding: 16px 30px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1.2rem;
-            font-family: "Josefin Sans", sans-serif;
-            font-weight: bold;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .login-btn:hover{
-            transform: scale(1.05);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
         }
         .btn-guest{
-            background-color: rgb(34, 128, 175);
+            background-color: rgb(135, 161, 39);
             color: white;
+            
+        }
+        .btn-guest:hover{
+            background-color: rgb(90, 107, 26);
         }
         .btn-admin{
             background-color: rgb(115, 196, 2);
             color: white;
         }
+        .btn-admin:hover{
+            background-color: rgb(95, 166, 1);
+        }
+        .user-avatar{
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+
+        /* ANA SAYFA METİN TASARIMI VE ANİMASYONU */
+        .page-wrapper {
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70vh; /* Ekranın ortasına hizalar */
+        }
+        .home-section {
+            max-width: 1000px;
+            pointer-events: none; /* Animasyon sadece yazının üstündeyken tetiklenir */
+        }
+        .home-text {
+            pointer-events: auto;
+            text-align: center;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.5rem;
+            line-height: 1.9;
+            color: #555;
+            transition: all 0.3s ease;
+            padding: 30px;
+        }
+        .home-text h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 4.5rem;
+            color: rgb(115, 196, 2);
+            margin-top: 0;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        /* HOVER ANİMASYONU */
+        .home-section:hover .home-text {
+            color: #111;
+            transform: scale(1.03);
+        }
+        .home-section:hover .home-text h1 {
+            color: rgb(75, 130, 1);
+        }
     </style>
 </head>
 <body>
     <div id="loginScreen">
-        <div class="login-title">TUNCAY FURKAN UYMAZ PERSONAL PAGE</div>
         <div class="login-box">
-            <button id="guestBtn" class="login-btn btn-guest">Continue as Guest</button>
-            <button id="adminBtn" class="login-btn btn-admin">Login as Admin</button>
+            <h1 class="login-title">TUNCAY FURKAN UYMAZ</h1>
+            <div class="login-subtitle">Welcome To My Personal Page</div>
+            <div class="login-btn-group">
+                <button id="guestBtn" class="login-btn btn-guest">Guest</button>
+                <button id="adminBtn" class="login-btn btn-admin">Admin</button>
+            </div>
         </div>
     </div>
     <div class="topbar">
         <div class="left">
             <a href="https://x.com/FurkanUymaz8" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
-            <a href="https://www.instagram.com/furkannuymazz/#" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
-            <a href="#"><i class="fa-brands fa-square-github"></i></a>
+            <a href="https://www.instagram.com/furkannuymazz/" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
+            <a href="https://github.com/FurkanUymaz/"><i class="fa-brands fa-square-github"></i></a>
         </div>
         <div class="center">
             <a href="index.html">HOME</a>
             <a href="about.html">ABOUT ME</a>
-            <a href="technologies.html">TECHNOLOGIES</a>
+            <a href="projects.html">PROJECTS</a>
         </div>
         <div class="right">
             <span>
-                <img src="user_giraffe.png" alt="user">
+                <img src="C:\Users\Furkan UYMAZ\Desktop\WEBGIS\Me.jpg" alt="user" class="user-avatar">
             </span>
             <div class="searchEngine" id="searchEngine">
                 <input type="text" placeholder="Search...">
@@ -91,10 +164,14 @@
         </div>
     </div>
     <div class="page-wrapper">
-        <h1>Welcome to My Personal Page</h1>
-        <p style="margin-top: 20px; font-size: 1.2rem;">
-            Hello! I am a student at Hacettepe University. This is my GMT 458 Web GIS assignment page.
-        </p>
+        <div class="home-section">
+            <div class="home-text">
+                <h1>Welcome to My Personal Page</h1>
+                <p>
+                    Welcome to my personal page! You can visit <strong>About Me</strong> to explore interactive maps featuring my favorite locations and personal background, or check out <strong>Projects</strong> if you are interested in viewing my latest artificial intelligence and software applications.
+                </p>
+            </div>
+        </div>
     </div>
     <script>
         const loginScreen = document.getElementById('loginScreen')
