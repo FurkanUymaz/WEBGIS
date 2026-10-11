@@ -5,7 +5,7 @@ I created the project using HTML, CSS, and JavaScript codes. I provided various 
 
 ## Project Contents
 
-- **Login Screen:** When you first enter the site, a screen appears where you can log in as Admin or Guest. I provided this authorization using `sessionStorage`.
+- **Login Screen:** When you first enter the site, a screen appears where you can log in as Admin or Guest. I provided this authorization using `sessionStorage`. If you want to login as Admin, password is "123456". Admin can add marker or remove marker. If admin add or remove marker for one map its upgraded for both map just for local storage.
 - **Dual Map System:** There are both Leaflet and OpenLayers maps on the About Me page. You can switch between the two maps with a button.
 - **Point Clustering:** I added the clustering feature to both map libraries to prevent clutter when there are too many points on the map.
 - **Browser Memory Save:** When logged in as Admin, we can add or delete new markers by clicking on the map. I saved this data to the browser using `localStorage`, so the added points are not lost when the page is refreshed.
